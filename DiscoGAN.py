@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 # Hyper
 initializer = tf.truncated_normal_initializer(stddev=0.02)
 learning_rate = 0.0002
-batch_size = 256
+batch_size = 64
 epoch = 100000
 lamb = 10
 
@@ -26,7 +26,7 @@ shoes_image = tf.cast(tf.reshape(shoes_image, shape=[64, 64, 3]),
 bags_image = tf.cast(tf.reshape(bags_image, shape=[64, 64, 3]),
         dtype=tf.float32) / 255.0
 
-num_preprocess_threads = 1
+num_preprocess_threads = 8
 min_queue_examples = 256
 batch_shoes = tf.train.shuffle_batch([shoes_image],
         batch_size=batch_size,
@@ -40,8 +40,15 @@ batch_bags = tf.train.shuffle_batch([bags_image],
         capacity=min_queue_examples + 3*batch_size,
         min_after_dequeue=min_queue_examples)
 
-input(batch_shoes)
-input(batch_bags)
+#def simple_shuffle_batch(source, capacity):
+#    queue = tf.RandomShuffleQueue(capacity=capacity,
+#            min_after_deque=int(0.9*capacity),
+#            shapes=source.shape, dtype=source.dtype)
+#    enqueue = queue.enqueue(source)
+#    qr = tf.train.QueueRunner(queue, [enqueue] * num_threads)
+#    pass
+#input(batch_shoes)
+#input(batch_bags)
 # Train functions
 def lrelu(x, leak=0.2, name='lrelu'):
     with tf.variable_scope(name):
@@ -468,31 +475,35 @@ g_grads = g_optim.compute_gradients(gen_loss, gen_sb_vars + gen_bs_vars)
 update_D = d_optim.apply_gradients(d_grads)
 update_G = g_optim.apply_gradients(g_grads)
 
-init = tf.initialize_all_variables()
+init = tf.global_variables_initializer()
 saver = tf.train.Saver()
 
-with tf.Session() as sess:
+with tf.train.MonitoredSession() as sess:
+    print('init')
     sess.run(init)
 
-    sess.run([batch_shoes, batch_bags])
+    #print('batches')
+    #sess.run([batch_shoes, batch_bags])
 
-    #try:
-    #    saver.restore(sess=sess, save_path="/home/daniel/Github/CalHacks-4/model/model.ckpt")
-    #    print("Model Restored!")
-    #except:
-    #    print("MODEL NOT RESTORED, STARTING FROM SCRATCH!")
-    #    pass
+    try:
+        saver.restore(sess=sess._sess._sess._sess._sess,
+                save_path="/home/daniel/Github/CalHacks-4/model/model.ckpt")
+        print("Model Restored!")
+    except:
+        print("MODEL NOT RESTORED, STARTING FROM SCRATCH!")
+        pass
 
-    coord = tf.train.Coordinator()
-    threads = tf.train.start_queue_runners(sess=sess, coord=coord)
+    #coord = tf.train.Coordinator()
+    #threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
     #sess.run([batch_shoes, batch_bags])
 
     for i in range(epoch):
-        print(i)
+        print(i/epoch*100)
+        #sess.run([batch_shoes, batch_bags])
         for j in range(2):
             _ = sess.run([update_G])
-            print(j)
+            #print(j)
         _,_,g_loss,d_loss,reconed_b,reconed_s,fake_s,fake_b,s_image,b_image = sess.run(
                 [update_G, update_D,
                     gen_loss, disc_loss,
@@ -501,8 +512,8 @@ with tf.Session() as sess:
                     batch_shoes, batch_bags])
 
         if i % 100 == 0:
-            saver.save(sess, './model/model.ckpt')
-            print("{}th iter gen less: {} disc loss: {}".format(
+            saver.save(sess._sess._sess._sess._sess, './model/model.ckpt')
+            print("{}th iter:\ngen less: {}\ndisc loss: {}\n".format(
                 i,
                 g_loss/batch_size,
                 d_loss/batch_size))
@@ -513,6 +524,6 @@ with tf.Session() as sess:
             plt.imsave("./result/{}th_gen_bag.png".format(i), fake_b[0])
             plt.imsave("./result/{}th_gen_shoe.png".format(i), fake_s[0])
 
-    coord.request_stop()
-    coord.join(threads)
+    #coord.request_stop()
+    #coord.join(threads)
 
