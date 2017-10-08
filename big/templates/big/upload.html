@@ -1,4 +1,5 @@
 {% load static %}
+{% load materializecss %}
 <!DOCTYPE html>
 <html>
 	<head>
@@ -15,20 +16,7 @@
 	<body>
 		<nav class="blue" role="navigation">
 			<div class="nav-wrapper container">
-				<a id="logo-container" href="{% url 'index' %}" class="brand-logo">Biggify</a>
-				<a href="#" data-activates="nav-mobile" class="button-collapse">
-					<i class="material-icons">menu</i>
-				</a>
-				<ul class="right hide-on-med-and-down">
-					<li>
-						<a href="{% url 'upload' %}" class="wave-effect waves-light btn">Create Task</a>
-					</li>
-				</ul>
-				<ul id="nav-mobile" class="side-nav">
-					<li>
-						<a href="{% url 'upload' %}">Create Task</a>
-					</li>
-				</ul>
+				<a id="logo-container" href="{% url 'index' %}" class="brand-logo center">Biggify</a>
 			</div>
 		</nav>
 
@@ -36,15 +24,16 @@
 		<script type="text/javascript" src="{% static 'big/js/materialize.min.js' %}"></script>
 		<script type="text/javascript" src="{% static 'big/js/init.js' %}></script>
 
-		<div class="section">
-			<div class="container">
-				<h1 class="center header">Biggify</h1>
-				<br />
-				<div class="row center">
-					<h5 class="header button-collapse s12 light black-text">
-						This seems to be working
-					</h5>
-				</div>
+		<div class="container">
+			<div class="row">
+				<form action="" method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+					{{ form|materializecss }}
+					<button type="submit" class="btn waves-effect waves-light right">
+						Upload
+						<i class="material-icons">send</i>
+					</button>
+				</form>
 			</div>
 		</div>
 	</body>
