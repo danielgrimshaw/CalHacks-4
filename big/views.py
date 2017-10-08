@@ -20,6 +20,12 @@ def upload(request):
     return render(request, 'big/upload.html', { 'form': form })
 
 def handleUpload(email, dataset):
+    # Create Dataset object
+    # Enqueue Dataset object somewhere, probably SQS or GCP equiv
+    # **OUTSIDE PROCESSING** extract dataset and train model on it
+    # **OUTSIDE PROCESSING** create extension of dataset
+    # **OUTSIDE PROCESSING** Signal user that data is ready/send user the data
+    # Return Dataset id
     pass
 
 def complete(request, datasetId):
