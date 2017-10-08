@@ -1,8 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
 <html>
-<head>
-</head>
-<body>
-	<h1>Working</h1>
-	<p>This is using the template</p>
-</body>
+	<head>
+		<!-- Google Icon font -->
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+		<!-- materializecss -->
+		<link type="text/css" rel="stylesheet" href="{% static 'big/css/materialize.min.css' %}" media="screen,projection" />
+
+		<!-- There is a  mobile version -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>Biggify - Enlarge your dataset the easy way</title>
+	</head>
+	<body>
+		<nav class="blue" role="navigation">
+			<div class="nav-wrapper container">
+				<a id="logo-container" href="{% url 'index' %}" class="brand-logo">Biggify</a>
+				<a href="#" data-activates="nav-mobile" class="button-collapse">
+					<i class="material-icons">menu</i>
+				</a>
+				<ul class="right hide-on-med-and-down">
+					<li>
+						<a href="#" class="wave-effect waves-light btn">Create Task</a>
+					</li>
+				</ul>
+				<ul id="nav-mobile" class="side-nav">
+					<li>
+						<a href="#">Create Task</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="{% static 'big/js/materialize.min.js' %}"></script>
+		<script type="text/javascript" src="{% static 'big/js/init.js' %}></script>
+
+		<div class="section">
+			<div class="container">
+				<h1 class="center header">Biggify</h1>
+				<br />
+				<div class="row center">
+					<h5 class="header button-collapse s12 light black-text">
+						This seems to be working
+					</h5>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>
